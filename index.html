@@ -1085,6 +1085,163 @@
         height: 300px;
       }
     }
+
+    /* --- NOVOS ESTILOS PARA O BANNER E FILTROS --- */
+
+    /* Container do Banner Principal */
+    .main-banner-container {
+      width: 100%;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    .main-banner-container img {
+      width: 100%;
+      height: fill;
+      display: block;
+      /* Ajuste opcional para não deixar o banner gigante em telas muito grandes */
+      max-height: 600px; 
+      object-fit: fill; 
+      object-position: center;
+    }
+
+    /* Container dos Botões de Filtragem Redondos */
+    .brand-filter-section {
+      padding: 25px 3%;
+      background: var(--bg-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap; /* Para alinhar em Telas Pequenas */
+    }
+
+    .filter-btn-round {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--bg-surface);
+      border: 2px solid var(--border-color);
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      outline: none;
+    }
+
+    .filter-btn-round:hover, .filter-btn-round.active {
+      transform: scale(1.1);
+      border-color: var(--accent);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    .filter-btn-round img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    /* Estilo para o botão "Todas" que é texto */
+    .filter-btn-round.all-brands {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-main);
+      letter-spacing: 0.5px;
+    }
+
+    body.dark-mode .filter-btn-round {
+      box-shadow: 0 4px 6px rgba(255,0,0,0.1);
+    }
+    
+    body.dark-mode .filter-btn-round img {
+        /* Inverte as cores dos logos pretos no modo escuro */
+        filter: invert(1);
+    }
+
+    /* Ajuste responsivo para os botões em celulares */
+    @media (max-width: 480px) {
+      .brand-filter-section {
+        gap: 15px;
+        padding: 20px 3%;
+      }
+      .filter-btn-round {
+        width: 65px;
+        height: 65px;
+        padding: 8px;
+      }
+      .filter-btn-round.all-brands {
+        font-size: 11px;
+      }
+   }
+
+.search-bar-container {
+  max-height: 0;
+  overflow: hidden;
+  background: var(--bg-surface);
+  border-bottom: 0px solid var(--border-color);
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  padding: 0 4%;
+  position: sticky;
+  top: 62px;
+  z-index: 99;
+}
+
+.search-bar-container.active {
+  max-height: 80px;
+  padding: 12px 4%;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.search-input-wrapper {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-wrapper i {
+  position: absolute;
+  left: 14px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  padding: 10px 14px 10px 38px;
+  background: var(--bg-light);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-input-wrapper input:focus {
+  border-color: var(--primary);
+}
+
+.search-toggle-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  width: 38px;  /* Força a largura a ficar igual à altura */
+  height: 38px; /* Altura padrão alinhada com os outros ícones */
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;   /* Remove o padding esticado */
+}
   </style>
 </head>
 <body>
@@ -1121,6 +1278,11 @@
     </div>
 
     <div class="header-right-btns">
+
+<button class="search-toggle-btn" onclick="toggleSearch()" title="Pesquisar">
+      <i class="fa-solid fa-magnifying-glass"></i>
+   </button>
+
       <button class="theme-toggle-btn" onclick="toggleDarkMode()" title="Alternar Modo Escuro">
         <i class="fa-solid fa-moon" id="theme-icon"></i>
       </button>
@@ -1135,6 +1297,42 @@
       </button>
     </div>
   </header>
+
+<!-- Campo de Pesquisa Abaixo do Header -->
+<div class="search-bar-container" id="search-bar-container">
+  <div class="search-input-wrapper">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="site-search-input" placeholder="O que você está procurando?" oninput="filterProductsBySearch(this.value)">
+  </div>
+</div>
+
+  <!-- --- NOVA SEÇÃO: BANNER DO TOPO --- -->
+  <div class="main-banner-container">
+    <img src="rlbimportsbanner.jpeg" alt="RLB Imports - Banner Principal">
+  </div>
+
+  <!-- --- NOVA SEÇÃO: BOTÕES DE FILTRAGEM REDONDOS --- -->
+  <section class="brand-filter-section" id="brand-filters">
+    <!-- Botão "Todas" -->
+    <button class="filter-btn-round all-brands active" onclick="filterByBrand('all', this)" title="Mostrar todas as marcas">
+      Todas
+    </button>
+    
+    <!-- Botão Adidas -->
+    <button class="filter-btn-round" onclick="filterByBrand('ADIDAS', this)" title="Filtrar por Adidas">
+      <img src="logoadidas.jpg" alt="Adidas">
+    </button>
+
+    <!-- Botão Lacoste -->
+    <button class="filter-btn-round" onclick="filterByBrand('LACOSTE', this)" title="Filtrar por Lacoste">
+      <img src="logolacoste.jpg" alt="Lacoste">
+    </button>
+
+    <!-- Botão Nike -->
+    <button class="filter-btn-round" onclick="filterByBrand('NIKE', this)" title="Filtrar por Nike">
+      <img src="logonike.jpg" alt="Nike">
+    </button>
+  </section>
 
   <!-- Sidebar Menu -->
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
@@ -1346,6 +1544,27 @@
     let isSignUpMode = false;
     let currentUser = null;
 
+    // --- NOVA LOGICA: FILTRAGEM POR MARCA ---
+    window.filterByBrand = (brand, btnElement) => {
+      // 1. Atualiza visual dos botões
+      document.querySelectorAll('#brand-filters .filter-btn-round').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      btnElement.classList.add('active');
+
+      // 2. Define o filtro ativo
+      activeFilter = brand;
+
+      // 3. Reseta o filtro de categoria da sidebar
+      const sidebarBtns = document.querySelectorAll('#sidebar-categories button');
+      sidebarBtns.forEach(btn => btn.classList.remove('active'));
+      if (sidebarBtns[0]) sidebarBtns[0].classList.add('active'); // Reativa "Todas as Categorias" na sidebar
+
+      // 4. Mostra o catálogo e renderiza
+      showCatalog();
+      renderSections();
+    };
+
     // Modal de Alertas Exclusivo da Loja
     window.showAlertModal = (msg) => {
       document.getElementById('custom-alert-message').textContent = msg;
@@ -1513,6 +1732,10 @@
     }
 
     window.filterCategory = (category) => {
+      // Reseta filtro de marca quando escolhe categoria na sidebar
+      document.querySelectorAll('#brand-filters .filter-btn-round').forEach(btn => btn.classList.remove('active'));
+      document.querySelector('#brand-filters .filter-btn-round.all-brands').classList.add('active');
+
       activeFilter = category;
       toggleSidebar();
       showCatalog();
@@ -1550,16 +1773,23 @@
       const grouped = {};
       Object.keys(productsData).forEach(id => {
         const prod = productsData[id];
-        const cat = prod.category ? prod.category.trim() : 'Geral';
         
-        if (activeFilter !== 'all' && cat !== activeFilter) return;
+        // --- LOGICA DE FILTRAGEM ATUALIZADA (MARCA OU CATEGORIA) ---
+        const cat = prod.category ? prod.category.trim() : 'Geral';
+        const brand = prod.brand ? prod.brand.trim() : ''; // Supõe que você tenha campo 'brand' no Firebase
+
+        // Se filtro ativo for 'all', mostra tudo.
+        // Se filtro não for 'all', verifica se bate com a Categoria OU com a Marca.
+        if (activeFilter !== 'all') {
+            if (cat !== activeFilter && brand !== activeFilter) return;
+        }
 
         if (!grouped[cat]) grouped[cat] = [];
         grouped[cat].push({ id, ...prod });
       });
 
       if (Object.keys(grouped).length === 0) {
-        container.innerHTML = `<p style="padding: 40px 0; color: #888;">Nenhum produto encontrado nesta seção.</p>`;
+        container.innerHTML = `<p style="padding: 40px 0; text-align:center; color: #888; font-size:14px;">Nenhum produto encontrado com este filtro.</p>`;
         return;
       }
 
@@ -1604,6 +1834,11 @@
     window.showCatalog = () => {
       document.getElementById('product-page').classList.remove('active');
       document.getElementById('catalog-view').style.display = 'block';
+      
+      // Mostra o Banner e Filtros de Marca novamente
+      document.querySelector('.main-banner-container').style.display = 'block';
+      document.querySelector('.brand-filter-section').style.display = 'flex';
+
       window.location.hash = '';
     };
 
@@ -1611,6 +1846,10 @@
       const p = productsData[id];
       if (!p) return;
       currentProduct = { ...p, id };
+
+      // Esconde o Banner e Filtros de Marca na página do produto
+      document.querySelector('.main-banner-container').style.display = 'none';
+      document.querySelector('.brand-filter-section').style.display = 'none';
 
       document.getElementById('detail-title').textContent = p.name;
       document.getElementById('detail-price').textContent = `R$ ${parseFloat(p.price).toFixed(2).replace('.', ',')}`;
@@ -1943,6 +2182,82 @@
       const phone = "5519992560753";
       window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
     };
+
+// Abrir/Fechar barra de pesquisa
+window.toggleSearch = () => {
+  const container = document.getElementById('search-bar-container');
+  container.classList.toggle('active');
+  if (container.classList.contains('active')) {
+    document.getElementById('site-search-input').focus();
+  } else {
+    document.getElementById('site-search-input').value = '';
+    filterProductsBySearch(''); // Limpa a busca ao fechar
+  }
+};
+
+// Filtrar produtos em tempo real pelo texto digitado
+window.filterProductsBySearch = (query) => {
+  const term = query.toLowerCase().trim();
+  const container = document.getElementById('sections-container');
+  container.innerHTML = '';
+
+  const grouped = {};
+  Object.keys(productsData).forEach(id => {
+    const prod = productsData[id];
+    const name = prod.name ? prod.name.toLowerCase() : '';
+    const desc = prod.description ? prod.description.toLowerCase() : '';
+    const cat = prod.category ? prod.category.trim() : 'Geral';
+
+    // Se houver termo de busca, verifica se o nome ou descrição contêm o termo
+    if (term !== '' && !name.includes(term) && !desc.includes(term)) {
+      return;
+    }
+
+    if (!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push({ id, ...prod });
+  });
+
+  if (Object.keys(grouped).length === 0) {
+    container.innerHTML = `<p style="padding: 40px 0; text-align:center; color: #888; font-size:14px;">Nenhum produto encontrado para "${query}".</p>`;
+    return;
+  }
+
+  Object.keys(grouped).forEach(catName => {
+    const sectionBlock = document.createElement('div');
+    sectionBlock.className = 'section-block';
+
+    const title = document.createElement('h2');
+    title.className = 'section-title';
+    title.innerHTML = `<i class="fa-solid fa-angle-right" style="font-size: 12px;"></i> ${catName}`;
+    sectionBlock.appendChild(title);
+
+    const grid = document.createElement('div');
+    grid.className = 'product-grid';
+
+    grouped[catName].forEach(p => {
+      const images = p.images ? p.images.split(',').map(s => s.trim()).filter(Boolean) : ['https://via.placeholder.com/300'];
+      const tagHTML = p.tag ? `<span class="tag-badge">${p.tag}</span>` : '';
+
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.onclick = () => openProductPage(p.id);
+      card.innerHTML = `
+        <div class="card-img-wrap">
+          ${tagHTML}
+          <img src="${images[0]}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300'">
+        </div>
+        <div class="product-info">
+          <div class="product-title">${p.name}</div>
+          <div class="product-price">R$ ${parseFloat(p.price).toFixed(2).replace('.', ',')}</div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    sectionBlock.appendChild(grid);
+    container.appendChild(sectionBlock);
+  });
+};
   </script>
 </body>
 </html>
